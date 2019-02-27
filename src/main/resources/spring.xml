@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/context
+        http://www.springframework.org/schema/context/spring-context.xsd">
+	<context:annotation-config />
+	<context:component-scan base-package="com.fdm.legendtrading.springmvc" />
+	<tx:annotation-driven transaction-manager="transactionManager"/>
+	<bean id="dataSource" class="oracle.jdbc.pool.OracleDataSource"
+		destroy-method="close">
+		<property name="dataSourceName" value="ds" />
+		<property name="URL" value="jdbc:oracle:thin:@localhost:1521:xe" />
+		<property name="user" value="trainee1" />
+		<property name="password" value="!QAZSE4" />
+	</bean>
+	<!-- Hibernate 3 XML SessionFactory Bean definition -->
+	<!-- <bean id="hibernate3SessionFactory" class="org.springframework.orm.hibernate3.LocalSessionFactoryBean"> 
+		<property name="dataSource" ref="dataSource" /> <property name="mappingResources"> 
+		<list> <value>person.hbm.xml</value> </list> </property> <property name="hibernateProperties"> 
+		<value> hibernate.dialect=org.hibernate.dialect.MySQLDialect </value> </property> 
+		</bean> -->
+	<!-- Hibernate 3 Annotation SessionFactory Bean definition -->
+	<bean id="hibernate3AnnotatedSessionFactory"
+		class="org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean">
+		<property name="dataSource" ref="dataSource" />
+		<property name="annotatedClasses">
+			<list>
+				<value>com.fdm.legendtrading.springmvc.model.Login</value>
+				<value>com.fdm.legendtrading.springmvc.model.Trade</value>
+				<value>com.fdm.legendtrading.springmvc.model.Account</value>
+				<value>com.fdm.legendtrading.springmvc.model.Entitlement</value>
+				<value>com.fdm.legendtrading.springmvc.model.Position</value>
+				<value>com.fdm.legendtrading.springmvc.model.Asset</value>
+				
+			</list>
+		</property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.OracleDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.use_sql_comments">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create-drop</prop>
+			</props>
+		</property>
+	</bean>
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate3.HibernateTransactionManager">
+		<property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" />
+	</bean>
+<!-- 	<bean id="accountDao" class="com.fdm.legendtrading.springmvc.dao.AccountDaoImpl"> -->
+<!-- 		<property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" /> -->
+<!-- 	</bean> -->
+<!-- 	<bean id="tradeDao" class="com.fdm.legendtrading.springmvc.dao.TradeDaoImpl"> -->
+<!-- 		<property name="sessionFactory" ref="hibernate3AnnotatedSessionFactory" /> -->
+<!-- 	</bean> -->
+</beans>
